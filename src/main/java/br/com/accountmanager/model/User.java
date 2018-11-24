@@ -11,11 +11,6 @@ public class User {
 		this.age = age;
 	}
 	
-	
-	public User() {
-		super();
-	}
-
 	public String getName() {
 		return name;
 	}

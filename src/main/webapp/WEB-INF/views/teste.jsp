@@ -6,7 +6,7 @@
 <spring:url value="/resources/core/css/bootstrap.min.css" var="bootstrapCss" />
 <link href="${bootstrapCss}" rel="stylesheet" />
 
-<title>Account Manager</title>
+<title>Account Meu Manager</title>
 </head>
 <body>
 	
@@ -88,14 +88,15 @@
 <spring:url value="/resources/jquery/1.6/jquery.js" var="jqueryImport" />
 <script src="${jqueryImport}"></script>
 
-<script type="text/javascript">
-	$(document).ready(function() {
-		$.ajax({
-			url : "ajaxTeste"
-		}).then(function(data) {
-			alert(data.user);
-			$('.greeting-content').append(data);
-		});
-	});
-</script>
+
+<!-- <script type="text/javascript">
+	// $(document).ready(function() {
+	// 	$.ajax({
+	// 		url : "ajaxTeste"
+	// 	}).then(function(data) {
+	// 		alert(data.user);
+	// 		$('.greeting-content').append(data);
+	// 	});
+	// });
+</script> -->
 </html>
