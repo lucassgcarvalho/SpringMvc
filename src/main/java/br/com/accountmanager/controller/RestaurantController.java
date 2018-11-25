@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import br.com.accountmanager.service.MenuService;
 import br.com.accountmanager.service.RestaurantService;
 
 
@@ -23,15 +22,12 @@ import br.com.accountmanager.service.RestaurantService;
  */
 @Controller
 @CrossOrigin
-public class IndexController {
+public class RestaurantController {
 		
-	private final static Logger LOGGER = Logger.getLogger(IndexController.class);
+	private final static Logger LOGGER = Logger.getLogger(RestaurantController.class);
 
 	@Autowired
 	private RestaurantService restaurantService;
-
-	@Autowired
-	private MenuService menuService;
 
 	@RequestMapping(value = "/restaurants", method = RequestMethod.GET)
 	@ResponseBody
@@ -71,54 +67,5 @@ public class IndexController {
 		return response;
 		
 	}
-	
-	
-	@ResponseBody
-	@RequestMapping(value = "/restaurants/{id}/menu", method= RequestMethod.GET)
-	public String findMenuByRestaurantId(@PathVariable("id") String id) {
-		String response = "" ;
-		try {
-			response = menuService.findMenuByRestaurantId(id);
-		} catch (FileNotFoundException e) {
-			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
-		} catch (IOException e) {
-			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
-		}catch (ParseException e) {
-			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
-		}
-		return response;
-	}
-	
-//	@RequestMapping(value = "/user/{name}", method = RequestMethod.GET)
-//	public ModelAndView hello(@PathVariable("name") String name) {
-//
-//		ModelAndView model = new ModelAndView();
-//		model.setViewName("teste");
-//		model.addObject("msg", name);
-//
-//		return model;
-//	}
-	
-	// @RequestMapping(value = "/ajaxTeste", method = RequestMethod.GET)
-	// @ResponseBody
-	// public ModelAndView ajaxTeste(Model model) {
-
-	// 	User user = new User("Lucas Carvalho", 24);
-		
-	// 	JSONObject obj = new JSONObject();
-	//     obj.put("user", user);
-	//     HashMap<String, String> map = new HashMap<String, String>();
-	//     map.put("user", obj.toString());
-	// 	model.addAllAttributes(map);
-		
-	//     ModelAndView modelAndView = new ModelAndView();
-	//     modelAndView.setViewName("teste");
-	//     modelAndView.addObject("user", user);
-
-	// 	return modelAndView.addAllObjects(map);
-	// }
 	
 }
