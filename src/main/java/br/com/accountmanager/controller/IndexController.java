@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import br.com.accountmanager.service.MenuService;
 import br.com.accountmanager.service.RestaurantService;
 
 
@@ -28,6 +29,9 @@ public class IndexController {
 
 	@Autowired
 	private RestaurantService restaurantService;
+
+	@Autowired
+	private MenuService menuService;
 
 	@RequestMapping(value = "/restaurants", method = RequestMethod.GET)
 	@ResponseBody
@@ -74,7 +78,7 @@ public class IndexController {
 	public String findMenuByRestaurantId(@PathVariable("id") String id) {
 		String response = "" ;
 		try {
-			response = restaurantService.findMenuByRestaurantId(id);
+			response = menuService.findMenuByRestaurantId(id);
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e.getMessage(), e);
 			response = e.getMessage();

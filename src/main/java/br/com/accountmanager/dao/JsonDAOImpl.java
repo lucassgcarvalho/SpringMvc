@@ -3,7 +3,6 @@ package br.com.accountmanager.dao;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
@@ -43,7 +42,7 @@ public class JsonDAOImpl implements JsonDAO  {
 		jsonParser = new JSONParser();
 	}
 	
-	public JSONObject read() throws IOException  {
+	public synchronized JSONObject read() throws IOException  {
 		if(jSONObject!=null && !isUpdateJson(timeInitial)) {
 			return jSONObject;
 		}
@@ -69,6 +68,11 @@ public class JsonDAOImpl implements JsonDAO  {
 	}
 	
 	
+	/**
+	 * Check if is time to update the JsonObject
+	 * @param timeInitial
+	 * @return
+	 */
 	private boolean isUpdateJson(Calendar timeInitial) {
 		if(timeInitial==null) {
 			return true;
