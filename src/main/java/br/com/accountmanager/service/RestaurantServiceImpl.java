@@ -2,25 +2,32 @@ package br.com.accountmanager.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import br.com.accountmanager.dao.JsonDAO;
+import br.com.accountmanager.StrategyService;
+import br.com.accountmanager.exceptions.StrategyException;
+import br.com.accountmanager.model.Restaurant;
+import br.com.accountmanager.strategy.Strategy;
 
 /**
  * @author Lucas
  */
 @Service
+@Qualifier(value="RestaurantServiceImpl")
 public class RestaurantServiceImpl implements RestaurantService{
+	
+	private final static Logger LOGGER = Logger.getLogger(RestaurantServiceImpl.class);
 
 	@Autowired
-    private JsonDAO jsonDAO;
+	@Qualifier(value="Strategy")
+	@StrategyService(value="RestaurantService")
+	private Strategy strategy;
 
     public RestaurantServiceImpl() {
     	super();
@@ -34,7 +41,17 @@ public class RestaurantServiceImpl implements RestaurantService{
      * @throws FileNotFoundException 
      */
     public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
-    	return ((JSONArray) ((JSONObject) jsonDAO.read()).get("restaurants")).toJSONString();
+    	try {
+			return ((RestaurantService) strategy.getStrategy()).findAllRestaurants();
+		} catch (StrategyException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+			return e.getMessage();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+			return e.getMessage();
+		}
     }
 
 
@@ -44,12 +61,35 @@ public class RestaurantServiceImpl implements RestaurantService{
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-	public String findRestaurantById(String id) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) jsonDAO.read()).get("restaurants");
-		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
-        .filter(x -> id.equals( ((JSONObject)x).get("id").toString() ))
-        .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
+	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+		try {
+			return ((RestaurantService) this.strategy.getStrategy()).findRestaurantById(restaurant);
+		} catch (ClassNotFoundException | StrategyException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+			return e.getMessage();
+		}
+	}
+
+
+	@Override
+	public void create(Object object) {
+	}
+
+
+	@Override
+	public void update(Object object) {
+	}
+
+
+	@Override
+	public void detele(Object object) {
+	}
+
+
+	@Override
+	public List<Object> findAll(Object object) {
+		return null;
 	}
 
 }

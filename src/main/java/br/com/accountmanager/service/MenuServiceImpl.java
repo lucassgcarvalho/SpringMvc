@@ -2,30 +2,39 @@ package br.com.accountmanager.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.List;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import br.com.accountmanager.dao.JsonDAO;
+import br.com.accountmanager.StrategyService;
+import br.com.accountmanager.exceptions.StrategyException;
+import br.com.accountmanager.strategy.Strategy;
 
 /**
  * @author Lucas
  */
 @Service
+@Qualifier(value="MenuServiceImpl")
 public class MenuServiceImpl implements MenuService{
 
+	private final static Logger LOGGER = Logger.getLogger(MenuServiceImpl.class);
+	
+	/*@Autowired
+	@Qualifier(value="MenuStrategyDAO")
+	private MenuStrategyDAO menuStrategyDAO;
+*/	
 	@Autowired
-    private JsonDAO jsonDAO;
-
+	@Qualifier(value="Strategy")
+	@StrategyService(value="MenuService")
+	private Strategy strategy;
+	
     public MenuServiceImpl() {
     	super();
     }
-
     
     /**
      * Method returns all restaurants 
@@ -34,9 +43,17 @@ public class MenuServiceImpl implements MenuService{
      * @throws FileNotFoundException 
      */
     public String findAllMenu() throws FileNotFoundException, IOException, ParseException {
-    	return ((JSONArray) ((JSONObject) jsonDAO.read()).get("menu")).toJSONString();
+    	try {
+			return ((MenuService) this.strategy.getStrategy()).findAllMenu();
+		} catch (StrategyException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		}
+    	return null;
     }
-
 
     /**
      * Method returns all restaurants by id 
@@ -45,11 +62,16 @@ public class MenuServiceImpl implements MenuService{
      * @throws FileNotFoundException 
      */
 	public String findMenuById(String id) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) jsonDAO.read()).get("menu");
-		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
-        .filter(x -> id.equals( ((JSONObject)x).get("id").toString() ))
-        .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
+		try {
+			return ((MenuService) this.strategy.getStrategy()).findMenuById(id);
+		} catch (StrategyException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		}
+    	return null;
 	}
 
 	/**
@@ -59,11 +81,44 @@ public class MenuServiceImpl implements MenuService{
      * @throws FileNotFoundException 
      */
 	public String findMenuByRestaurantId(String id) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) jsonDAO.read()).get("menu"); 
-		Object[] findFirst = Arrays.stream( (jSONArray).toArray()  )
-		        .filter(x -> id.equals(((JSONObject)x).get("restaurantId").toString()))
-		        .toArray();
-		return Arrays.toString(findFirst);
+		try {
+			return ((MenuService) this.strategy.getStrategy()).findMenuByRestaurantId(id);
+		} catch (StrategyException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		} catch (ClassNotFoundException e) {
+			LOGGER.error(e.getMessage(), e);
+			e.printStackTrace();
+		}
+    	return null;
+	}
+
+
+	@Override
+	public void create(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void update(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void detele(Object object) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public List<Object> findAll(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

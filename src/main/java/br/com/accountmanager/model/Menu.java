@@ -8,6 +8,10 @@ public class Menu extends CommonModel{
 	
 	private static final long serialVersionUID = 5906279557583799640L;
 	
+
+	public static final Object MENU_ID = "menuId";
+	public static final Object MENU = "menu";
+	
 	private String price;
 	private Restaurant restaurant;
 	

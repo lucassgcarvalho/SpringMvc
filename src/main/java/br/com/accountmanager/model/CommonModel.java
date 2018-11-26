@@ -10,6 +10,8 @@ public abstract class CommonModel implements Serializable{
 	
 	private static final long serialVersionUID = -7023762459019066844L;
 	
+	public static final Object ID = "id";
+	
 	private String id;
 	private String imagePath;
 	private String name;

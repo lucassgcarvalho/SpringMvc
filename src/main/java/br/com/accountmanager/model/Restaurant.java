@@ -12,6 +12,9 @@ public class Restaurant extends CommonModel {
 	
 	private static final long serialVersionUID = -5340317865536390461L;
 
+	public static final Object RESTAURANT_ID = "restaurantId";
+	public static final Object RESTAURANT = "restaurants";
+
 	private Category category;
 	private String  deliveryEstimate;
 	private Rating  rating;

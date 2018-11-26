@@ -17,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
-import br.com.accountmanager.model.CommonModel;
-import br.com.accountmanager.model.Menu;
 import br.com.accountmanager.model.Restaurant;
 import br.com.accountmanager.service.MenuService;
 import br.com.accountmanager.service.RestaurantService;
@@ -29,8 +27,8 @@ import br.com.accountmanager.strategy.DAO;
  * @author Lucas
  *
  */
-@Component("JsonDAOImpl")
-public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
+@Component
+public class JdbcDAO implements MenuService, RestaurantService  {
 	
 	private final static Logger LOGGER = Logger.getLogger(RestaurantServiceImpl.class);
 
@@ -48,37 +46,10 @@ public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
 	private JSONObject jSONObject;
 	private Calendar timeInitial;
 	
-	public JsonDAOImpl() {
+	public JdbcDAO() {
 		super();
 		jsonParser = new JSONParser();
 	}
-	
-	private synchronized JSONObject read() throws IOException, ParseException  {
-		if(jSONObject!=null && !isUpdateJson(timeInitial)) {
-			return jSONObject;
-		}
-		FileReader fileReader = null; 
-		try {
-			String canonicalPath = resourceLoader.getResource(DB_JSON_FILE_PATH).getFile().getCanonicalPath();
-			fileReader = new FileReader(canonicalPath);
-			jSONObject =  (JSONObject) jsonParser.parse(fileReader);
-			timeInitial = Calendar.getInstance();
-			return jSONObject;
-		} catch (IOException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage(), e);
-			throw new IOException("Error to pick the file up.", e);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			LOGGER.error(e.getMessage(), e);
-			throw new ParseException(e.getPosition(), e.getErrorType(), e);
-		} finally {
-			if(fileReader!=null) {
-				fileReader.close();
-			}
-		}
-	}
-	
 	
 
 	@Override
@@ -104,6 +75,65 @@ public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
 		return null;
 	}
 	
+	@Override
+	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
+		return ((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
+	}
+
+	@Override
+	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get("restaurants");
+		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
+        .filter(x -> restaurant.getId().equals( ((JSONObject)x).get("id").toString() ))
+        .findFirst();
+        return findFirst.isPresent()?findFirst.get().toString():null;
+	}
+
+	@Override
+	public String findAllMenu() throws FileNotFoundException, IOException, ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String findMenuById(String id) throws FileNotFoundException, IOException, ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String findMenuByRestaurantId(String id) throws FileNotFoundException, IOException, ParseException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public synchronized JSONObject read() throws IOException  {
+		if(jSONObject!=null && !isUpdateJson(timeInitial)) {
+			return jSONObject;
+		}
+		FileReader fileReader = null; 
+		try {
+			String canonicalPath = resourceLoader.getResource(DB_JSON_FILE_PATH).getFile().getCanonicalPath();
+			fileReader = new FileReader(canonicalPath);
+			jSONObject =  (JSONObject) jsonParser.parse(fileReader);
+			timeInitial = Calendar.getInstance();
+			return jSONObject;
+		} catch (IOException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			LOGGER.error(e.getMessage(), e);
+		} finally {
+			if(fileReader!=null) {
+				fileReader.close();
+			}
+		}
+		return null;
+	}
+	
+	
+
 	/**
 	 * Check if is time to update the JsonObject
 	 * @param timeInitial
@@ -122,41 +152,6 @@ public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
 		return false;
 	}
 
-	@Override
-	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
-		return ((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
-	}
-
-	@Override
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get(Restaurant.RESTAURANT);
-		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
-        .filter(x -> restaurant.getId().equals( ((JSONObject)x).get(CommonModel.ID).toString() ))
-        .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
-	}
-
-	@Override
-	public String findAllMenu() throws FileNotFoundException, IOException, ParseException {
-		return ((JSONArray) ((JSONObject) read()).get("menu")).toJSONString();
-	}
-
-	@Override
-	public String findMenuById(String id) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get(Menu.MENU);
-		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
-        .filter(x -> id.equals( ((JSONObject)x).get(CommonModel.ID).toString() ))
-        .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
-	}
-
-	@Override
-	public String findMenuByRestaurantId(String id) throws FileNotFoundException, IOException, ParseException {
-		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get(Menu.MENU); 
-		Object[] findFirst = Arrays.stream( (jSONArray).toArray()  )
-		        .filter(x -> id.equals(((JSONObject)x).get(Restaurant.RESTAURANT_ID).toString()))
-		        .toArray();
-		return Arrays.toString(findFirst);
-	}
+	
 	
 }

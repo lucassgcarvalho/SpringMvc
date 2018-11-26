@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +28,7 @@ public class MenuController {
 	private final static Logger LOGGER = Logger.getLogger(MenuController.class);
 
 	@Autowired
+	@Qualifier(value="MenuServiceImpl")
 	private MenuService menuService;
 
 	/**
