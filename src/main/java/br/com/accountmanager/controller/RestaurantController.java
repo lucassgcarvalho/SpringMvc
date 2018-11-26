@@ -2,17 +2,19 @@ package br.com.accountmanager.controller;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import br.com.accountmanager.model.Restaurant;
 import br.com.accountmanager.service.RestaurantService;
@@ -22,7 +24,8 @@ import br.com.accountmanager.service.RestaurantService;
  * @author Lucas
  *
  */
-@Controller
+@RestController
+@RequestMapping(value="/restaurants")
 @CrossOrigin
 public class RestaurantController {
 		
@@ -32,45 +35,34 @@ public class RestaurantController {
 	@Qualifier(value="RestaurantServiceImpl")
 	private RestaurantService restaurantService;
 
-	@RequestMapping(value = "/restaurants", method = RequestMethod.GET)
-	@ResponseBody
-	public String getRestaurants(){
-		String response = "" ;
+	@GetMapping
+	public ResponseEntity<List<Restaurant>> findRestaurants(){
 		try {
-			response = restaurantService.findAllRestaurants();
+			return ResponseEntity.ok().body(restaurantService.findAllRestaurants());
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		}catch (ParseException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		}
-		return response;
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 
-	@ResponseBody
-	@RequestMapping(value = "/restaurants/{id}", method= RequestMethod.GET)
-	public String findRestaurantById(@PathVariable("id") String id) {
-		String response = "" ;
+	@GetMapping(value="/{id}")
+	public ResponseEntity<Restaurant> findRestaurantById(@PathVariable("id") String id) {
 		try {
 			Restaurant restaurant = new Restaurant();
 			restaurant.setId(id);
-			response = restaurantService.findRestaurantById(restaurant);
+			return ResponseEntity.ok().body(restaurantService.findRestaurantById(restaurant));
 		} catch (FileNotFoundException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		} catch (IOException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		}catch (ParseException e) {
 			LOGGER.error(e.getMessage(), e);
-			response = e.getMessage();
 		}
-		return response;
-		
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
 }

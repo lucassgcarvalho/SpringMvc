@@ -76,17 +76,18 @@ public class JdbcDAO implements MenuService, RestaurantService  {
 	}
 	
 	@Override
-	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
-		return ((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
+	public List<Restaurant> findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
+		return null;//((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
 	}
 
 	@Override
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+	public Restaurant findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
 		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get("restaurants");
 		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
         .filter(x -> restaurant.getId().equals( ((JSONObject)x).get("id").toString() ))
         .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
+//        return findFirst.isPresent()?findFirst.get().toString():null;
+        return null;
 	}
 
 	@Override

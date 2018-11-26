@@ -1,5 +1,11 @@
 package br.com.accountmanager.model;
 
+import java.math.BigDecimal;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Lucas
  *
@@ -12,13 +18,18 @@ public class Menu extends CommonModel{
 	public static final Object MENU_ID = "menuId";
 	public static final Object MENU = "menu";
 	
-	private String price;
+	@NotBlank(message="Price can't be empty.")
+	@Min(value=0, message="Price must be more than 0.")
+	private BigDecimal price;
+	
+	@NotNull(message="Restaurant can't be null.")
 	private Restaurant restaurant;
 	
-	public String getPrice() {
+
+	public BigDecimal getPrice() {
 		return price;
 	}
-	public void setPrice(String price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 	public Restaurant getRestaurant() {

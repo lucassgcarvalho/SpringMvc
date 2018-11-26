@@ -48,7 +48,7 @@ public class Strategy {
 	 * @throws ClassNotFoundException
 	 * @throws StrategyException
 	 */
-	public String getCallerMethodServicesName() throws ClassNotFoundException, StrategyException { 
+	private String getCallerMethodServicesName() throws ClassNotFoundException, StrategyException { 
 	    StackTraceElement[] stackThread = Thread.currentThread().getStackTrace();
 	    String callerClassName = null;
 	    for (int i=1; i<stackThread.length; i++) {

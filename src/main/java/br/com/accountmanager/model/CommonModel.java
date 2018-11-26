@@ -2,6 +2,8 @@ package br.com.accountmanager.model;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Lucas
  *
@@ -13,8 +15,14 @@ public abstract class CommonModel implements Serializable{
 	public static final Object ID = "id";
 	
 	private String id;
+	
+	@NotBlank(message="Image path can't be empty.")
 	private String imagePath;
+	
+	@NotBlank(message="Name can't be empty.")
 	private String name;
+	
+	@NotBlank(message="Description can't be empty.")
 	private String description;
 
 	public String getId() {

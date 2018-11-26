@@ -40,18 +40,17 @@ public class RestaurantServiceImpl implements RestaurantService{
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-    public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
+    public List<Restaurant> findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
     	try {
 			return ((RestaurantService) strategy.getStrategy()).findAllRestaurants();
 		} catch (StrategyException e) {
 			e.printStackTrace();
 			LOGGER.error(e.getMessage(), e);
-			return e.getMessage();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			LOGGER.error(e.getMessage(), e);
-			return e.getMessage();
 		}
+    	return null;
     }
 
 
@@ -61,13 +60,13 @@ public class RestaurantServiceImpl implements RestaurantService{
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+	public Restaurant findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
 		try {
 			return ((RestaurantService) this.strategy.getStrategy()).findRestaurantById(restaurant);
 		} catch (ClassNotFoundException | StrategyException e) {
 			e.printStackTrace();
 			LOGGER.error(e.getMessage(), e);
-			return e.getMessage();
+			return null;
 		}
 	}
 

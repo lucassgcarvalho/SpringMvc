@@ -3,6 +3,7 @@ package br.com.accountmanager.dao;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -16,6 +17,9 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import br.com.accountmanager.model.CommonModel;
 import br.com.accountmanager.model.Menu;
@@ -47,10 +51,14 @@ public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
 	private JSONParser jsonParser;
 	private JSONObject jSONObject;
 	private Calendar timeInitial;
+	private Type type;
+	private Gson gson ;
 	
 	public JsonDAOImpl() {
 		super();
 		jsonParser = new JSONParser();
+		type = new TypeToken<List<Restaurant>>() {}.getType();
+		gson = new Gson();
 	}
 	
 	private synchronized JSONObject read() throws IOException, ParseException  {
@@ -123,17 +131,18 @@ public class JsonDAOImpl implements DAO, MenuService, RestaurantService  {
 	}
 
 	@Override
-	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
-		return ((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
+	public List<Restaurant> findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
+		return gson.fromJson(((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString(), type);
+//		return ((JSONArray) ((JSONObject) read()).get("restaurants")).toJSONString();
 	}
 
 	@Override
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+	public Restaurant findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
 		JSONArray jSONArray = (JSONArray) ((JSONObject) read()).get(Restaurant.RESTAURANT);
 		Optional<Object> findFirst = Arrays.stream( jSONArray.toArray()  )
         .filter(x -> restaurant.getId().equals( ((JSONObject)x).get(CommonModel.ID).toString() ))
         .findFirst();
-        return findFirst.isPresent()?findFirst.get().toString():null;
+        return findFirst.isPresent()?gson.fromJson(findFirst.get().toString(), Restaurant.class):null;
 	}
 
 	@Override

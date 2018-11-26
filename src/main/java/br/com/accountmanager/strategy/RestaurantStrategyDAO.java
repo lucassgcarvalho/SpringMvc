@@ -29,12 +29,12 @@ public class RestaurantStrategyDAO implements RestaurantService, DAO {
 	}
 	
 	@Override
-	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
+	public List<Restaurant> findAllRestaurants() throws FileNotFoundException, IOException, ParseException {
 		return factory.findAllRestaurants();
 	}
 
 	@Override
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
+	public Restaurant findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException {
 		return factory.findRestaurantById(restaurant);
 	}
 

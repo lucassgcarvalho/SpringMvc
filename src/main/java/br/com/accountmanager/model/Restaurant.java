@@ -2,6 +2,9 @@ package br.com.accountmanager.model;
 
 import java.util.List;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+
 import br.com.accountmanager.enums.Category;
 
 /**
@@ -15,22 +18,33 @@ public class Restaurant extends CommonModel {
 	public static final Object RESTAURANT_ID = "restaurantId";
 	public static final Object RESTAURANT = "restaurants";
 
+	@NotBlank(message="Category can't be null.")
 	private Category category;
-	private String  deliveryEstimate;
+	
+	@NotBlank(message="Delivery estimate can't be empty.")
+	private String deliveryEstimate;
+	
+	@NotBlank(message="Rating can't be null.")
 	private Rating  rating;
+	
+	@NotBlank(message="About can't be empty.")
+	@Max(value=1024, message="About can't has more than 1024 characters.")
 	private String  about;
+	
+	@NotBlank(message="Hours can't be empty.")
 	private String  hours;
+	
 	private List<Menu> menu;
 
 	
-	public String getDeliveryEstimate() {
-		return deliveryEstimate;
-	}
 	public Category getCategory() {
 		return category;
 	}
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+	public String getDeliveryEstimate() {
+		return deliveryEstimate;
 	}
 	public void setDeliveryEstimate(String deliveryEstimate) {
 		this.deliveryEstimate = deliveryEstimate;
@@ -60,5 +74,13 @@ public class Restaurant extends CommonModel {
 		this.rating = rating;
 	}
 
+//	public String getRating() {
+//		return this.rating.getRating();
+//	}
+	public void setRating(String rating) {
+		this.rating = new Rating();
+	}
+
+	
 }
 

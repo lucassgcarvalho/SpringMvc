@@ -2,6 +2,7 @@ package br.com.accountmanager.service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
@@ -10,6 +11,6 @@ import br.com.accountmanager.strategy.DAO;
 
 public interface RestaurantService extends DAO {
 	
-	public String findAllRestaurants() throws FileNotFoundException, IOException, ParseException;
-	public String findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException;
+	public List<Restaurant> findAllRestaurants() throws FileNotFoundException, IOException, ParseException;
+	public Restaurant findRestaurantById(Restaurant restaurant) throws FileNotFoundException, IOException, ParseException;
 }

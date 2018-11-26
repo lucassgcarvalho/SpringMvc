@@ -1,22 +1,24 @@
 package br.com.accountmanager.enums;
 
+import javax.validation.constraints.NotBlank;
+
 public enum Category {
 
 	SAUDAVEL("Saudável"), COFFE_SHOP("Coffee Shop"), HAMBURGERS("Hamburgers"), BAKERY("Bakery"), ICE_CREAMS("Ice Creams"), DOCES("Doces") ;
 	 
-	private String category;
+	@NotBlank(message="Category's name can't be empty.")
+	private String name;
 	
 	Category(String category) {
-		this.category = category;
+		this.name = category;
 	}
 
-	public String getCategory() {
-		return category;
+	public String getName() {
+		return name;
 	}
 
-	public void setCategory(String category) {
-		this.category = category;
+	public void setName(String name) {
+		this.name = name;
 	}
-	
-	
+
 }
